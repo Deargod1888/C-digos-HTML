@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login de Seguridad</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 320px;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            width: 96%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .mensaje {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>Iniciar Sesión</h2>
+        <p id="intentos-texto">Intentos restantes: 3</p>
+        
+        <input type="password" id="password-input" placeholder="Escribe la contraseña">
+        <button id="btn-ingresar" onclick="verificarPassword()">Ingresar</button>
+        
+        <p id="resultado-mensaje" class="mensaje"></p>
+    </div>
+
+    <script>
+        const PASSWORD_CORRECTO = "Hermanita";
+        let intentosRestantes = 3;
+
+        function verificarPassword() {
+            const input = document.getElementById('password-input');
+            const boton = document.getElementById('btn-ingresar');
+            const mensajeTexto = document.getElementById('resultado-mensaje');
+            const intentosTexto = document.getElementById('intentos-texto');
+
+            const intentoUsuario = input.value;
+
+            if (intentoUsuario === PASSWORD_CORRECTO) {
+                // Caso: Contraseña Correcta
+                mensajeTexto.style.color = "green";
+                mensajeTexto.innerText = "🔓 ¡Acceso Concedido!";
+                input.disabled = true;
+                boton.disabled = true;
+            } else {
+                // Caso: Contraseña Incorrecta
+                intentosRestantes--;
+                
+                if (intentosRestantes > 0) {
+                    intentosTexto.innerText = "Intentos restantes: " + intentosRestantes;
+                    mensajeTexto.style.color = "orange";
+                    mensajeTexto.innerText = "Contraseña incorrecta.";
+                    input.value = ""; // Limpia la caja para volver a intentar
+                } else {
+                    // Caso: Se acabaron los intentos
+                    intentosTexto.innerText = "Intentos restantes: 0";
+                    mensajeTexto.style.color = "red";
+                    mensajeTexto.innerText = "❌ Sistema Bloqueado. Agotaste los intentos.";
+                    input.disabled = true;
+                    boton.disabled = true;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
