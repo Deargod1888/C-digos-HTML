@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serie de Taylor - Seno</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full">
+        <h1 class="text-2xl font-bold text-gray-800 mb-2 text-center">Aproximación del Seno</h1>
+        <p class="text-sm text-gray-500 text-center mb-6">Usando la Serie de Taylor (10 iteraciones)</p>
+
+        <div class="space-y-4">
+            <div>
+                <label for="angulo" class="block text-sm font-medium text-gray-700 mb-1">
+                    Introduce el ángulo en grados:
+                </label>
+                <input 
+                    type="number" 
+                    id="angulo" 
+                    placeholder="Ej: 45" 
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                >
+            </div>
+            
+            <button 
+                onclick="calcularSeno()" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+            >
+                Calcular
+            </button>
+        </div>
+
+        <div id="resultados" class="mt-6 pt-6 border-t border-gray-200 hidden space-y-3">
+            <h3 class="font-semibold text-gray-700">Resultados para <span id="res-angulo">0</span>°:</h3>
+            
+            <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Valor aproximado:</span>
+                <span id="val-aproximado" class="font-mono font-bold text-blue-600">0.000000</span>
+            </div>
+            
+            <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Valor real (Math.sin):</span>
+                <span id="val-real" class="font-mono font-bold text-green-600">0.000000</span>
+            </div>
+            
+            <div class="flex justify-between text-sm bg-red-50 p-2 rounded">
+                <span class="text-red-700 font-medium">Diferencia (Error):</span>
+                <span id="val-diferencia" class="font-mono font-bold text-red-700">0.0000000000</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función auxiliar para calcular el factorial en JavaScript
+        function factorial(n) {
+            if (n === 0 || n === 1) return 1;
+            let resultado = 1;
+            for (let i = 2; i <= n; i++) {
+                resultado *= i;
+            }
+            return resultado;
+        }
+
+        function calcularSeno() {
+            const inputAngulo = document.getElementById('angulo').value;
+            
+            // Validación: si está vacío, no hacer nada
+            if (inputAngulo === '') {
+                alert('Por favor, introduce un ángulo.');
+                return;
+            }
+
+            const anguloOriginal = parseFloat(inputAngulo);
+            
+            // Aplicamos la reducción del ángulo (en JS el residuo de negativos se ajusta así)
+            let anguloGrados = anguloOriginal % 360;
+            if (anguloGrados < 0) anguloGrados += 360;
+
+            // Convertir a radianes
+            const x = anguloGrados * (Math.PI / 180);
+
+            // Inicialización de variables para la serie
+            let aproximacionSeno = 0;
+            const iteraciones = 10;
+
+            for (let n = 0; n < iteraciones; n++) {
+                // Fórmula general del término
+                const numerador = Math.pow(-1, n) * Math.pow(x, 2 * n + 1);
+                const denominador = factorial(2 * n + 1);
+                
+                aproximacionSeno += numerador / denominador;
+            }
+
+            const valorReal = Math.sin(x);
+            const diferencia = Math.abs(valorReal - aproximacionSeno);
+
+            // Mostrar los resultados en el HTML
+            document.getElementById('res-angulo').innerText = anguloOriginal;
+            document.getElementById('val-aproximado').innerText = aproximacionSeno.toFixed(6);
+            document.getElementById('val-real').innerText = valorReal.toFixed(6);
+            document.getElementById('val-diferencia').innerText = diferencia.toFixed(10);
+
+            // Hacer visible la caja de resultados
+            document.getElementById('resultados').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
